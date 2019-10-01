@@ -3,7 +3,7 @@
  * @license MIT
  * @author Basic App Dev Team
  */
-namespace BasicApp\UserProvider\Config;
+namespace BasicApp\UserProvider\Models;
 
 class UserProvider extends BaseUserProvider
 {

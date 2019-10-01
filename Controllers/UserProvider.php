@@ -5,8 +5,8 @@
  */
 namespace BasicApp\UserProvider\Controllers;
 
-use BasicApp\UserProvider\Config\UserProvider as UserProviderConfig;
 use Exception;
+use ReflectionClass;
 
 class UserProvider extends \BasicApp\Core\PublicController
 {
@@ -22,11 +22,13 @@ class UserProvider extends \BasicApp\Core\PublicController
             throw new Exception($error);
         }
 
+        $providerId = (new ReflectionClass($adapter))->getShortName();
+
         $profile = $adapter->getUserProfile();
 
         if ($profile)
         {
-            if (!$userProvider->loginByProfile($profile, true, $error))
+            if (!$userProvider->login($providerId, $profile, true, $error))
             {
                 throw new Exception($error);
             }
