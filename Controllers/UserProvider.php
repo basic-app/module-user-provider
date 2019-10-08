@@ -1,12 +1,11 @@
 <?php
 /**
- * @license MIT
  * @author Basic App Dev Team
+ * @license MIT
  */
 namespace BasicApp\UserProvider\Controllers;
 
 use Exception;
-use ReflectionClass;
 
 class UserProvider extends \BasicApp\Core\PublicController
 {
@@ -22,21 +21,65 @@ class UserProvider extends \BasicApp\Core\PublicController
             throw new Exception($error);
         }
 
-        $providerId = (new ReflectionClass($adapter))->getShortName();
+        /*
+        if ($adapter->isConnected())
+        {
+            $adapter->disconnect();
+        }
+        */
+
+        $adapter->authenticate();
+
+        if (!$adapter->isConnected())
+        {
+            throw new Exception('User is not connected.');
+        }
 
         $profile = $adapter->getUserProfile();
 
-        if ($profile)
+        if (!$profile)
         {
-            if (!$userProvider->login($providerId, $profile, true, $error))
-            {
-                throw new Exception($error);
-            }
-
-            return $this->goHome();
+            throw new Exception('Profile is empty.');
         }
 
-        $adapter->authenticate();
+        if (!$userProvider->loginByProfile($adapter, $profile, true, $error))
+        {
+            throw new Exception($error);
+        }
+
+        return $this->redirect(base_url());
+
+
+
+
+        /*
+
+        
+
+        $profile = $adapter->getUserProfile();
+
+        print_r($profile);
+
+        var_dump($accessToken);
+
+        die;
+        */
+
+        /*
+
+
+        if ($accessToken)
+        {
+
+            var_dump($accessToken);
+
+            die;
+
+        }
+
+        
+
+        */
     }
 
 }
