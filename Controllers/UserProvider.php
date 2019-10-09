@@ -10,7 +10,10 @@ use Exception;
 class UserProvider extends \BasicApp\Core\PublicController
 {
 
-    public function authenticate($provider)
+    /**
+     * Display profile (test)
+     */
+    public function profile($provider)
     {
         $userProvider = service('userProvider');
 
@@ -21,12 +24,49 @@ class UserProvider extends \BasicApp\Core\PublicController
             throw new Exception($error);
         }
 
-        /*
+        if (!$adapter->isConnected())
+        {
+            throw new Exception('User is not connected.');
+        }
+
+        $profile = $adapter->getUserProfile();
+
+        echo '<pre>';
+
+        print_r($profile);
+
+        echo '</pre>';
+    }
+
+    public function logout($provider)
+    {
+        $userProvider = service('userProvider');
+
+        $adapter = $userProvider->getAdapter($provider, $error);
+
+        if (!$adapter)
+        {
+            throw new Exception($error);
+        }
+
         if ($adapter->isConnected())
         {
             $adapter->disconnect();
         }
-        */
+
+        return $this->goHome();
+    }
+
+    public function login($provider, $rememberMe = 1)
+    {
+        $userProvider = service('userProvider');
+
+        $adapter = $userProvider->getAdapter($provider, $error);
+
+        if (!$adapter)
+        {
+            throw new Exception($error);
+        }
 
         $adapter->authenticate();
 
@@ -39,47 +79,15 @@ class UserProvider extends \BasicApp\Core\PublicController
 
         if (!$profile)
         {
-            throw new Exception('Profile is empty.');
+            throw new Exception('User profile is empty.');
         }
 
-        if (!$userProvider->loginByProfile($adapter, $profile, true, $error))
+        if (!$userProvider->loginByProfile($adapter, $profile, (bool) $rememberMe, $error))
         {
             throw new Exception($error);
         }
 
-        return $this->redirect(base_url());
-
-
-
-
-        /*
-
-        
-
-        $profile = $adapter->getUserProfile();
-
-        print_r($profile);
-
-        var_dump($accessToken);
-
-        die;
-        */
-
-        /*
-
-
-        if ($accessToken)
-        {
-
-            var_dump($accessToken);
-
-            die;
-
-        }
-
-        
-
-        */
+        return $this->goHome();
     }
 
 }
