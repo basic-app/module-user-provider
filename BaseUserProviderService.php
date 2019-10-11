@@ -58,7 +58,7 @@ abstract class BaseUserProviderService
     {
         $class = $config->getAdapterClass();
 
-        $config = (array) $config;
+        $config = get_object_vars($config);
 
         $adapter = new $class($config);
 
