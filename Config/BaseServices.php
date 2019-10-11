@@ -1,0 +1,27 @@
+<?php
+/**
+ * @author Basic App Dev Team
+ * @license MIT
+ */
+namespace BasicApp\UserProvider\Config;
+
+use BasicApp\UserProvider\UserProviderService;
+
+abstract class BaseServices extends \CodeIgniter\Config\BaseService
+{
+
+    public static function userProvider($getShared = true)
+    {
+        if (!$getShared)
+        {
+            $config = config(UserProvider::class);
+
+            $service = new UserProviderService($config);
+
+            return $service;
+        }
+
+        return static::getSharedInstance(__FUNCTION__);
+    }
+
+}

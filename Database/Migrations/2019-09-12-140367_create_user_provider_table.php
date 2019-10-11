@@ -15,11 +15,11 @@ class CreateUserProviderTable extends \BasicApp\Core\Migration
     public function up()
     {
         $this->forge->addField([
-            'id' => $this->primaryKeyColumn(),
-            'created' => $this->createdColumn(),
-            'provider' => $this->stringColumn([static::CONSTRAINT => 63]),
-            'identifier' => $this->stringColumn([static::CONSTRAINT => 127]),
-            'user_id' => $this->foreignKeyColumn()
+            'id' => $this->primaryKey()->toArray(),
+            'created' => $this->created()->toArray(),
+            'provider' => $this->string(63)->toArray(),
+            'identifier' => $this->string(127)->toArray(),
+            'user_id' => $this->foreignKey()->toArray()
         ]);
 
         $this->forge->addKey('id', true);
@@ -30,12 +30,12 @@ class CreateUserProviderTable extends \BasicApp\Core\Migration
 
         $this->forge->addForeignKey('user_id', 'user', UserModel::FIELD_PREFIX . 'id', 'RESTRICT', 'RESTRICT');
 
-        $this->createTable($this->tableName);
+        $this->forge->createTable($this->tableName);
     }
 
     public function down()
     {
-        $this->dropTable($this->tableName);
+        $this->forge->dropTable($this->tableName);
     }
 
 }

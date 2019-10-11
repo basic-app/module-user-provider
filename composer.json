@@ -7,7 +7,7 @@
         }
     },
     "require": {
-        "basic-app/user": "dev-master",
-        "basic-app/service-user-provider": "dev-master"
+        "basic-app/user": "*",
+        "hybridauth/hybridauth": "^3.0"
     }
 }
