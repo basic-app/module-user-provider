@@ -7,9 +7,6 @@
         }
     },
     "require": {
-        "basic-app/user": "dev-master",
-        "basic-app/service-user-provider": "dev-master"
-        "basic-app/module-user": "dev-master",
-        "basic-app/service-user": "dev-master"
+        "basic-app/module-user": "*"
     }
 }
