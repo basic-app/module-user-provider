@@ -25,7 +25,7 @@ class UserProviderService
     public function __construct()
     {
         $config = [
-            'callback' => Util::getCurrentUrl(true)
+            'callback' => Util::getCurrentUrl(false)
         ];
 
         $userProviderConfig = config(UserProviderConfig::class);
@@ -34,6 +34,8 @@ class UserProviderService
 
         foreach(get_object_vars($userProviderConfig) as $key => $value)
         {
+            $name = ucfirst($key);
+
             if (!$value)
             {
                 continue;
@@ -43,9 +45,9 @@ class UserProviderService
 
             Assert::notEmpty($adapterConfig, $value);
 
-            $config['providers'][$key]['enabled'] = true;
+            $config['providers'][$name]['enabled'] = true;
 
-            $config['providers'][$key]['keys'] = get_object_vars($adapterConfig);
+            $config['providers'][$name]['keys'] = get_object_vars($adapterConfig);
         }
 
         $this->hybridAuth = new Hybridauth($config);

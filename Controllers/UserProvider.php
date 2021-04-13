@@ -18,12 +18,7 @@ class UserProvider extends \CodeIgniter\Controller
     {
         $userProvider = service('userProvider');
 
-        $adapter = $userProvider->getAdapter($provider, $error);
-
-        if (!$adapter)
-        {
-            throw new Exception($error);
-        }
+        $adapter = $userProvider->getAdapter($provider);
 
         if (!$adapter->isConnected())
         {
@@ -43,12 +38,7 @@ class UserProvider extends \CodeIgniter\Controller
     {
         $userProvider = service('userProvider');
 
-        $adapter = $userProvider->getAdapter($provider, $error);
-
-        if (!$adapter)
-        {
-            throw new Exception($error);
-        }
+        $adapter = $userProvider->getAdapter($provider);
 
         if ($adapter->isConnected())
         {
@@ -62,12 +52,7 @@ class UserProvider extends \CodeIgniter\Controller
     {
         $userProvider = service('userProvider');
 
-        $adapter = $userProvider->getAdapter($provider, $error);
-
-        if (!$adapter)
-        {
-            throw new Exception($error);
-        }
+        $adapter = $userProvider->getAdapter($provider);
 
         $adapter->authenticate();
 
