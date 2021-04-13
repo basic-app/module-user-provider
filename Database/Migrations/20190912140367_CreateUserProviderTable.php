@@ -2,25 +2,23 @@
 /**
  * @author Basic App Dev Team <dev@basic-app.com>
  * @license MIT
- * @link http://basic-app.com
+ * @link https://basic-app.com
  */
 namespace BasicApp\UserProvider\Database\Migrations;
 
-use BasicApp\User\Models\UserModel;
-
-class CreateUserProviderTable extends \BasicApp\Core\Migration
+class Migration_CreateUserProviderTable extends \BasicApp\Migration\BaseMigration
 {
 
-    public $tableName = 'user_provider';
+    public $table = 'user_provider';
 
     public function up()
     {
         $this->forge->addField([
             'id' => $this->primaryKey()->toArray(),
             'created' => $this->created()->toArray(),
+            'user_id' => $this->foreignKey()->toArray(),
             'provider' => $this->string(63)->toArray(),
-            'identifier' => $this->string(127)->toArray(),
-            'user_id' => $this->foreignKey()->toArray()
+            'identifier' => $this->string(127)->toArray()
         ]);
 
         $this->forge->addKey('id', true);
@@ -29,14 +27,14 @@ class CreateUserProviderTable extends \BasicApp\Core\Migration
 
         $this->forge->addKey('provider', false, false);
 
-        $this->forge->addForeignKey('user_id', 'user', UserModel::FIELD_PREFIX . 'id', 'RESTRICT', 'RESTRICT');
+        $this->forge->addForeignKey('user_id', 'user', 'id', 'RESTRICT', 'RESTRICT');
 
-        $this->forge->createTable($this->tableName);
+        $this->forge->createTable($this->table);
     }
 
     public function down()
     {
-        $this->forge->dropTable($this->tableName);
+        $this->forge->dropTable($this->table);
     }
 
 }

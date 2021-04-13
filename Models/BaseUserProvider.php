@@ -2,20 +2,21 @@
 /**
  * @author Basic App Dev Team <dev@basic-app.com>
  * @license MIT
- * @link http://basic-app.com
+ * @link https://basic-app.com
  */
 namespace BasicApp\UserProvider\Models;
 
-use BasicApp\User\Models\UserModel;
+use BasicApp\UserProvider\Entities\UserProvider as UserProviderEntity;
 
-abstract class BaseUserProvider extends \BasicApp\Core\Entity
+abstract class BaseUserProvider extends \BasicApp\Core\Model
 {
 
-    protected $modelClass = UserProviderModel::class;
+    protected $table = 'user_provider';
 
-    public function getUser()
-    {
-        return UserModel::findByPk($this->user_id);
-    }
+    protected $primaryKey = 'id';
+
+    protected $returnType = UserProviderEntity::class;
+
+    protected $allowedFields = ['user_id', 'provider', 'identifier'];
 
 }

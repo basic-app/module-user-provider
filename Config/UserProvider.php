@@ -2,10 +2,13 @@
 /**
  * @author Basic App Dev Team <dev@basic-app.com>
  * @license MIT
- * @link http://basic-app.com
+ * @link https://basic-app.com
  */
 namespace BasicApp\UserProvider\Config;
 
-class UserProvider extends BaseUserProvider
+abstract class BaseUserProvider extends \CodeIgniter\Config\BaseConfig
 {
+
+    public $providers = [];
+
 }

@@ -4,7 +4,7 @@
  * @license MIT
  * @link https://basic-app.com
  */
-namespace BasicApp\UserProvider\Models;
+namespace BasicApp\UserProvider\Entities;
 
 class UserProvider extends BaseUserProvider
 {

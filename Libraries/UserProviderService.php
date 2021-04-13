@@ -2,9 +2,9 @@
 /**
  * @author Basic App Dev Team <dev@basic-app.com>
  * @license MIT
- * @link http://basic-app.com
+ * @link https://basic-app.com
  */
-namespace BasicApp\UserProvider;
+namespace BasicApp\UserProvider\Libraries;
 
 class UserProviderService extends BaseUserProviderService
 {
