@@ -1,12 +1,9 @@
 {
-    "name": "basic-app/module-user-provider",
+    "name": "basic-app/user-provider",
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "BasicApp\\UserProvider\\": ""
         }
-    },
-    "require": {
-        "basic-app/module-user": "*"
     }
 }
