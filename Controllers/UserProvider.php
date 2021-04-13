@@ -8,7 +8,7 @@ namespace BasicApp\UserProvider\Controllers;
 
 use Exception;
 
-class UserProvider extends \BasicApp\Core\PublicController
+class UserProvider extends \CodeIgniter\Controller
 {
 
     /**

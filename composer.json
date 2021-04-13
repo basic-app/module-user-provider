@@ -7,10 +7,11 @@
         }
     },
     "require": {
+        "webmozart/assert": "*",
+        "hybridauth/hybridauth": "*",
         "basic-app/event": "*",
         "basic-app/entity": "*",
         "basic-app/migration": "*",
-        "basic-app/model": "*",
-        "webmozart/assert": "*"
+        "basic-app/model": "*"
     }
 }
