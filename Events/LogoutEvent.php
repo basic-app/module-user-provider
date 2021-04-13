@@ -11,8 +11,6 @@ class LogoutEvent extends \BasicApp\Event\BaseEvent
 
     public $provider;
 
-    public $identifier;
-
-    public $userID;
+    public $result;
 
 }

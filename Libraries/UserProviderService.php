@@ -14,8 +14,7 @@ use Webmozart\Assert\Assert;
 use BasicApp\UserProvider\Config\UserProvider as UserProviderConfig;
 use BasicApp\UserProvider\Models\UserProviderModel;
 use BasicApp\UserProvider\Models\UserProvider;
-use BasicApp\UserProvider\Events\LoginEvent;
-use BasicApp\UserProvider\Events\LogoutEvent;
+use BasicApp\UserProvider\Events\CreateUserEvent;
 
 class UserProviderService
 {
@@ -32,18 +31,16 @@ class UserProviderService
 
         Assert::notEmpty($userProviderConfig, UserProviderConfig::class);
 
-        foreach(get_object_vars($userProviderConfig) as $key => $value)
+        foreach($userProviderConfig->providers as $name => $class)
         {
-            $name = ucfirst($key);
-
             if (!$value)
             {
                 continue;
             }
 
-            $adapterConfig = config($value);
+            $adapterConfig = config($class);
 
-            Assert::notEmpty($adapterConfig, $value);
+            Assert::notEmpty($adapterConfig, $class);
 
             $config['providers'][$name]['enabled'] = true;
 
@@ -62,110 +59,58 @@ class UserProviderService
         return $return;
     }
 
-
-
-    /*
-
-    public function createUserByProfile($providerId, $profile, &$error = null)
+    public function adapterName(string $name)
     {
-        $params = [
-            UserModel::FIELD_PREFIX . 'name' => $profile->displayName
-        ];
-
-        return UserModel::createUser($params, $error);
+        return (new ReflectionClass($adapter))->getShortName();
     }
 
-    */
-
-    /*
-
-    public function getUserByProfile($providerId, $profile, &$error = null)
+    public function getUserByProfile(string $name, $profile, &$error = null)
     {
-        if (!$profile->identifier)
-        {
-            $error = lang('Identifier is empty.');
+        Assert::notEmpty($profile->identifier);
+   
+        $userProviderModel = model(UserProviderModel::class);
 
-            return false;
-        }
-
-        $model = new UserProviderModel;
-
-        $userProfile = $model
-            ->where('provider', $providerId)
+        $userProvider = $userProviderModel->where('provider', $providerId)
             ->where('identifier', $profile->identifier)
-            ->first();
+            ->one();
 
-        if ($userProfile)
+        if (!$userProfile)
         {
-            $user = $userProfile->getUser();
+            $adapter = $this->getAdapter($name);
 
-            if (!UserModel::getUserField($user, 'enabled'))
-            {
-                throw new Exception('Your account has been disabled.');
-            }
+            Assert::notEmpty($adapter, 'Adapter not found.');
 
-            return $user;
+            $providerId = $this->adapterName($adapter);
+
+            $event = CreateUserEvent::trigger($providerId, $userProfile);
+
+            Assert::notEmpty($event->userID, 'User not found.');
+
+            $userProvider = $userProviderModel->createEntity([
+                'user_id' => $userID,
+                'provider' => $providerId,
+                'identifier' => $profile->identifier
+            ]);
+
+            $userProviderModel->saveOrFail($userProfile);
         }
  
-        $userService = service('user');
+        $user = $userProviderModel->user($userProvider);
 
-        $user = $userService->getUser();
-
-        if (!$user)
-        {
-            $user = $this->createUserByProfile($providerId, $profile, $error);
-
-            if (!$user)
-            {
-                return false;
-            }
-        }
-
-        $provider = UserProviderModel::createEntity([
-            'user_id' => UserModel::getUserField($user, 'id'),
-            'provider' => $providerId,
-            'identifier' => $profile->identifier
-        ], true, false, $error);
-
-        if (!$provider)
-        {
-            return false;
-        }
+        Assert::notEmpty($user);
 
         return $user;
     }
 
-    */
-
-    /*
-
-    public function loginByProfile($adapter, $profile, $rememberMe = true, &$error = null)
+    public function getUserProfileByAccessToken(string $name, $accessToken)
     {
-        $providerId = (new ReflectionClass($adapter))->getShortName();
+        $adapter = $this->getAdapter($name);
 
-        $user = $this->getUserByProfile($providerId, $profile, $error);
+        Assert::notEmpty($adapter);
 
-        if (!$user)
-        {
-            return false;
-        }
-
-        return $this->_userService->login($user, $rememberMe, $error);
-    }
-
-    */
-
-    /*
-
-    public function loginByAccessToken($adapter, $accessToken, $rememberMe = true, &$error = null)
-    {
         $adapter->setAccessToken($accessToken);
 
-        $profile = $adapter->getUserProfile();
-
-        return $this->loginByProfile($adapter, $profile, $rememberMe, $error);
+        return $adapter->getUserProfile();
     }
-
-    */
 
 }

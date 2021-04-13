@@ -7,32 +7,12 @@
 namespace BasicApp\UserProvider\Controllers;
 
 use Exception;
+use Webmozart\Assert\Assert;
+use BasicApp\UserProvider\Events\LoginEvent;
+use BasicApp\UserProvider\Events\LogoutEvent;
 
 class UserProvider extends \CodeIgniter\Controller
 {
-
-    /**
-     * Display profile (test)
-     */
-    public function profile($provider)
-    {
-        $userProvider = service('userProvider');
-
-        $adapter = $userProvider->getAdapter($provider);
-
-        if (!$adapter->isConnected())
-        {
-            throw new Exception('User is not connected.');
-        }
-
-        $profile = $adapter->getUserProfile();
-
-        echo '<pre>';
-
-        print_r($profile);
-
-        echo '</pre>';
-    }
 
     public function logout($provider)
     {
@@ -44,6 +24,12 @@ class UserProvider extends \CodeIgniter\Controller
         {
             $adapter->disconnect();
         }
+
+        $providerId = $userProvider->adapterName($adapter);
+
+        $event = LogoutEvent::trigger($providerId);
+
+        Assert::true($event->result, 'Logout error.');
 
         return $this->goHome();
     }
@@ -68,12 +54,36 @@ class UserProvider extends \CodeIgniter\Controller
             throw new Exception('User profile is empty.');
         }
 
-        if (!$userProvider->loginByProfile($adapter, $profile, (bool) $rememberMe, $error))
-        {
-            throw new Exception($error);
-        }
+        $providerId = $userProvider->adapterName($adapter, $rememberMe);
+
+        $event = LoginEvent::trigger($providerId, $identifier, $profile);
+
+        Assert::true($event->result, 'Login error.');
 
         return $this->goHome();
+    }
+
+    /**
+     * Display profile (test)
+     */
+    public function profile($provider)
+    {
+        $userProvider = service('userProvider');
+
+        $adapter = $userProvider->getAdapter($provider);
+
+        if (!$adapter->isConnected())
+        {
+            throw new Exception('User is not connected.');
+        }
+
+        $profile = $adapter->getUserProfile();
+
+        echo '<pre>';
+
+        print_r($profile);
+
+        echo '</pre>';
     }
 
 }
