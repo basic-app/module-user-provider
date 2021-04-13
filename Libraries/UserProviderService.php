@@ -8,18 +8,14 @@ namespace BasicApp\UserProvider\Libraries;
 
 use Exception;
 use ReflectionClass;
-
+use Hybridauth\HttpClient\Util;
 use Hybridauth\Hybridauth;
 use Webmozart\Assert\Assert;
-
 use BasicApp\UserProvider\Config\UserProvider as UserProviderConfig;
 use BasicApp\UserProvider\Models\UserProviderModel;
 use BasicApp\UserProvider\Models\UserProvider;
 use BasicApp\UserProvider\Events\LoginEvent;
 use BasicApp\UserProvider\Events\LogoutEvent;
-
-//use BasicApp\User\Models\UserModel;
-//use BasicApp\User\Models\User;
 
 class UserProviderService
 {
@@ -29,22 +25,7 @@ class UserProviderService
     public function __construct()
     {
         $config = [
-            //'callback' => site_url('user-provider/callback')
-            // Location where to redirect users once they authenticate with a provider
-            //'callback' => 'https://example.com/path/to/this/script.php',
-
-            // Providers specifics
-            //'providers' => [
-            //    'Twitter' => [
-            //        'enabled' => true,     // Optional: indicates whether to enable or disable Twitter adapter. Defaults to false
-            //        'keys' => [
-            //            'key' => '...', // Required: your Twitter consumer key
-            //            'secret' => '...'  // Required: your Twitter consumer secret
-            //        ]
-            //    ],
-            //    'Google' => ['enabled' => true, 'keys' => ['id' => '...', 'secret' => '...']], // To populate in a similar way to Twitter
-            //    'Facebook' => ['enabled' => true, 'keys' => ['id' => '...', 'secret' => '...']]  // And so on
-            //]
+            'callback' => Util::getCurrentUrl(true)
         ];
 
         $userProviderConfig = config(UserProviderConfig::class);
@@ -63,7 +44,7 @@ class UserProviderService
             Assert::notEmpty($adapterConfig, $value);
 
             $config['providers'][$key]['enabled'] = true;
-            
+
             $config['providers'][$key]['keys'] = get_object_vars($adapterConfig);
         }
 
