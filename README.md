@@ -1,1 +1,1 @@
-# module-user-provider
+# user-provider
