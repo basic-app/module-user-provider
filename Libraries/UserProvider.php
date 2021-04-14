@@ -69,7 +69,7 @@ class UserProvider
         return (new ReflectionClass($adapter))->getShortName();
     }
 
-    public function getUserByProfile(string $provider, $profile, & $error = null)
+    public function getUserByProfile(string $provider, $profile, & $error = null) : ?int
     {
         Assert::notEmpty($profile->identifier, 'Profile identifier empty.');
    
@@ -77,7 +77,11 @@ class UserProvider
             ->where('identifier', $profile->identifier)
             ->one();
 
-        if (!$userProvider)
+        if ($userProvider)
+        {
+            $userID = $userProvider->user_id;
+        }
+        else
         {
             $userID = user_id();
 
@@ -89,9 +93,14 @@ class UserProvider
 
                 $providerId = $this->adapterName($adapter);
 
-                $event = CreateUserEvent::trigger($providerId, $profile);
+                $event = CreateUserEvent::trigger($providerId, $profile, $error);
 
-                Assert::notEmpty($event->userID, 'User not found.');
+                if (!$event->userID)
+                {
+                    $error = $event->error;
+
+                    return null;                    
+                }
 
                 $userID = $event->userID;
             }
@@ -102,14 +111,10 @@ class UserProvider
                 'user_id' => $userID
             ]);
 
-            $this->userProviderModel->saveOrFail($userProfile);
+            $this->userProviderModel->saveOrFail($userProvider);
         }
- 
-        $user = $this->userProviderModel->user($userProvider);
 
-        Assert::notEmpty($user, 'User not found.');
-
-        return $user;
+        return $userID;
     }
 
     public function getUserProfileByAccessToken(string $name, $accessToken)

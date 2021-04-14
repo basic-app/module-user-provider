@@ -15,13 +15,17 @@ class LoginEvent extends \BasicApp\Event\BaseEvent
 
     public $profile;
 
-    public $user;
+    public $userID;
+
+    public $rememberMe;
 
     public $result;
 
     public $error;
 
-    public function __construct(string $provider, Profile $profile, $user)
+    public $user;
+
+    public function __construct(string $provider, Profile $profile, int $userID, bool $rememberMe = true)
     {
         parent::__construct();
 
@@ -29,7 +33,9 @@ class LoginEvent extends \BasicApp\Event\BaseEvent
 
         $this->profile = $profile;
 
-        $this->user = $user;
+        $this->userID = $userID;
+
+        $this->rememberMe = $rememberMe;
     }
 
 }

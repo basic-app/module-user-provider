@@ -13,7 +13,11 @@ class CreateUserEvent extends \BasicApp\Event\BaseEvent
 
     public $profile;
 
+    public $user;
+
     public $userID;
+
+    public $error;
 
     public function __construct($provider, $profile)
     {

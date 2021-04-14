@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 use BasicApp\UserProvider\Events\LoginEvent;
 use BasicApp\UserProvider\Events\LogoutEvent;
 
-class UserProvider extends \CodeIgniter\Controller
+class UserProvider extends \BasicApp\Controller\BaseController
 {
 
     public function login($provider, $rememberMe = 1)
@@ -33,15 +33,15 @@ class UserProvider extends \CodeIgniter\Controller
 
         $providerId = $userProvider->adapterName($adapter, $rememberMe);
 
-        $user = $userProvider->getUserByProfile($providerId, $profile);
+        $userID = $userProvider->getUserByProfile($providerId, $profile, $error);
 
-        Assert::notEmpty($user, 'User not found.');
+        Assert::notEmpty($userID, $error ?? 'User not found.');
 
-        $event = LoginEvent::trigger($providerId, $profile, $user);
+        $event = LoginEvent::trigger($providerId, $profile, $userID, $rememberMe);
 
         Assert::true($event->result, $event->error ?? 'Login failed.');
 
-        return $this->goHome();
+        return $this->redirect('/');
     }
 
     /**

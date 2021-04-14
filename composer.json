@@ -9,6 +9,7 @@
     "require": {
         "webmozart/assert": "*",
         "hybridauth/hybridauth": "*",
+        "basic-app/controller": "*",
         "basic-app/event": "*",
         "basic-app/entity": "*",
         "basic-app/migration": "*",
