@@ -8,4 +8,7 @@ namespace BasicApp\UserProvider\Config;
 
 class UserProvider extends \CodeIgniter\Config\BaseConfig
 {
+
+    public $providers = [];
+    
 }

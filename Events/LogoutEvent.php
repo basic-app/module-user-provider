@@ -11,6 +11,11 @@ class LogoutEvent extends \BasicApp\Event\BaseEvent
 
     public $provider;
 
-    public $result;
+    public function __construct(string $provider)
+    {
+        parent::__construct();
+
+        $this->provider = $provider;
+    }
 
 }

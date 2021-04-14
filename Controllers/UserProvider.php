@@ -14,26 +14,6 @@ use BasicApp\UserProvider\Events\LogoutEvent;
 class UserProvider extends \CodeIgniter\Controller
 {
 
-    public function logout($provider)
-    {
-        $userProvider = service('userProvider');
-
-        $adapter = $userProvider->getAdapter($provider);
-
-        if ($adapter->isConnected())
-        {
-            $adapter->disconnect();
-        }
-
-        $providerId = $userProvider->adapterName($adapter);
-
-        $event = LogoutEvent::trigger($providerId);
-
-        Assert::true($event->result, 'Logout error.');
-
-        return $this->goHome();
-    }
-
     public function login($provider, $rememberMe = 1)
     {
         $userProvider = service('userProvider');
@@ -49,16 +29,17 @@ class UserProvider extends \CodeIgniter\Controller
 
         $profile = $adapter->getUserProfile();
 
-        if (!$profile)
-        {
-            throw new Exception('User profile is empty.');
-        }
+        Assert::notEmpty($profile, 'Profile not found.');
 
         $providerId = $userProvider->adapterName($adapter, $rememberMe);
 
-        $event = LoginEvent::trigger($providerId, $identifier, $profile);
+        $user = $userProvider->getUserByProfile($providerId, $profile);
 
-        Assert::true($event->result, 'Login error.');
+        Assert::notEmpty($user, 'User not found.');
+
+        $event = LoginEvent::trigger($providerId, $profile, $user);
+
+        Assert::true($event->result, $event->error ?? 'Login failed.');
 
         return $this->goHome();
     }
@@ -72,10 +53,7 @@ class UserProvider extends \CodeIgniter\Controller
 
         $adapter = $userProvider->getAdapter($provider);
 
-        if (!$adapter->isConnected())
-        {
-            throw new Exception('User is not connected.');
-        }
+        Assert::true($adapter->isConnected(), 'User not connected.');
 
         $profile = $adapter->getUserProfile();
 
@@ -84,6 +62,26 @@ class UserProvider extends \CodeIgniter\Controller
         print_r($profile);
 
         echo '</pre>';
+    }
+
+    public function logout($provider)
+    {
+        $userProvider = service('userProvider');
+
+        $adapter = $userProvider->getAdapter($provider);
+
+        if ($adapter->isConnected())
+        {
+            $adapter->disconnect();
+        }
+
+        $providerId = $userProvider->adapterName($adapter);
+
+        $event = LogoutEvent::trigger($providerId);
+
+        //Assert::notFalse($event->result, $event->error ?? 'Logout failed.');
+
+        return $this->goHome();
     }
 
 }

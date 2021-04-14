@@ -6,7 +6,8 @@
  */
 namespace BasicApp\UserProvider\Config;
 
-use BasicApp\UserProvider\Libraries\UserProviderService;
+use Webmozart\Assert\Assert;
+use BasicApp\UserProvider\Libraries\UserProvider as UserProviderService;
 
 class Services extends \CodeIgniter\Config\BaseService
 {
@@ -16,6 +17,8 @@ class Services extends \CodeIgniter\Config\BaseService
         if (!$getShared)
         {
             $config = config(UserProvider::class);
+
+            Assert::notEmpty($config, 'Config not found: ' . UserProvider::class);
 
             return new UserProviderService($config);
         }

@@ -8,7 +8,7 @@ namespace BasicApp\UserProvider\Models;
 
 use BasicApp\UserProvider\Entities\UserProvider as UserProviderEntity;
 
-abstract class BaseUserProvider extends \BasicApp\Core\Model
+abstract class BaseUserProvider extends \BasicApp\Model\BaseModel
 {
 
     protected $table = 'user_provider';
@@ -17,6 +17,6 @@ abstract class BaseUserProvider extends \BasicApp\Core\Model
 
     protected $returnType = UserProviderEntity::class;
 
-    protected $allowedFields = ['user_id', 'provider', 'identifier'];
+    protected $allowedFields = ['provider', 'identifier', 'user_id'];
 
 }

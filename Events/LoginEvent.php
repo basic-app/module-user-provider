@@ -6,26 +6,30 @@
  */
 namespace BasicApp\UserProvider\Events;
 
+use Hybridauth\User\Profile;
+
 class LoginEvent extends \BasicApp\Event\BaseEvent
 {
 
     public $provider;
 
-    public $identifier;
-
     public $profile;
 
-    public $userID;
+    public $user;
 
-    public function __construct($provider, $identifier, $profile)
+    public $result;
+
+    public $error;
+
+    public function __construct(string $provider, Profile $profile, $user)
     {
         parent::__construct();
 
         $this->provider = $provider;
 
-        $this->identifier = $identifier;
-
         $this->profile = $profile;
+
+        $this->user = $user;
     }
 
 }
