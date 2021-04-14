@@ -14,6 +14,7 @@ use Webmozart\Assert\Assert;
 use BasicApp\UserProvider\Config\UserProvider as UserProviderConfig;
 use BasicApp\UserProvider\Models\UserProvider as UserProviderModel;
 use BasicApp\UserProvider\Events\CreateUserEvent;
+use Hybridauth\Exception\RuntimeException;
 
 class UserProvider
 {
@@ -135,7 +136,16 @@ class UserProvider
 
     public function onLogout($event)
     {
-        $this->hybridAuth->disconnectAllAdapters();
+        try
+        {
+            $this->hybridAuth->disconnectAllAdapters();
+        }
+        catch(RuntimeException $e)
+        {
+            $event->result = false;
+
+            $event->error = $e->getMessage();
+        }
     }
 
 }
