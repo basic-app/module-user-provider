@@ -106,7 +106,7 @@ class UserProvider
                 $userID = $event->userID;
             }
 
-            $userProvider = $this->userProviderModel->createEntity([
+            $userProvider = $this->userProviderModel->createData([
                 'provider' => $providerId,
                 'identifier' => $profile->identifier,
                 'user_id' => $userID
