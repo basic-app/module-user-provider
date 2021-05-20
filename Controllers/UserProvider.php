@@ -41,7 +41,7 @@ class UserProvider extends \BasicApp\Controller\BaseController
 
         Assert::true($event->result, $event->error ?? 'Login failed.');
 
-        //return $this->redirect('/');
+        return $this->redirect('/');
     }
 
     /**
