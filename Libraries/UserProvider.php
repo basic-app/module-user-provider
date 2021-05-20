@@ -76,7 +76,7 @@ class UserProvider
    
         $userProvider = $this->userProviderModel->where('provider', $provider)
             ->where('identifier', $profile->identifier)
-            ->one();
+            ->first();
 
         if ($userProvider)
         {
