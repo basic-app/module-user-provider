@@ -14,6 +14,8 @@ class Services extends \CodeIgniter\Config\BaseService
 
     public static function userProvider($getShared = true)
     {
+        service('session'); // Init Session Service First
+
         if (!$getShared)
         {
             $config = config(UserProvider::class);

@@ -79,9 +79,9 @@ class UserProvider extends \BasicApp\Controller\BaseController
 
         $event = LogoutEvent::trigger($providerId);
 
-        //Assert::notFalse($event->result, $event->error ?? 'Logout failed.');
+        Assert::notFalse($event->result, $event->error ?? 'Logout failed.');
 
-        return $this->goHome();
+        return $this->redirect('/');
     }
 
 }
