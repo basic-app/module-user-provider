@@ -34,7 +34,7 @@ class UserProvider
         Assert::notEmpty($this->userProviderModel, 'Model not found: ' . UserProviderModel::class);
 
         $config = [
-            'callback' => Util::getCurrentUrl(false)
+            'callback' => current_url()
         ];
 
         foreach($this->config->providers as $name => $class)
