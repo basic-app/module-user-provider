@@ -41,7 +41,7 @@ class UserProvider extends \BasicApp\Controller\BaseController
 
         Assert::true($event->result, $event->error ?? 'Login failed.');
 
-        return $this->redirect('/');
+        return $this->redirect('/front');
     }
 
     /**
@@ -81,7 +81,7 @@ class UserProvider extends \BasicApp\Controller\BaseController
 
         Assert::notFalse($event->result, $event->error ?? 'Logout failed.');
 
-        return $this->redirect('/');
+        return $this->redirect('/front');
     }
 
 }
